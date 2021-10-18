@@ -1,12 +1,6 @@
 // Что необходимо реализовать (первые 2 пункта делаем по видео):
 
-// Удаление дел на кнопку КОРЗИНА
-// Сохранять данные о делах в localStorage (советую в виде массива)
 // Дела из localStorage подгружаться должны автоматически при загрузки странице
-
-// внимание чтобы сохранить массив в localStorage необходимо его конвертировать в json формат (JSON.stringify)
-
-// внимание из localStorage мы всегда получаем json строку и её необходимо конвертировать обратно в формат javascript (JSON.parse)
 
 //  Проверить, чтобы все работало и не было ошибок в консоли (Учесть вариант отсутствия объекта в localstorage пользователя при первой загрузке страницы
 
@@ -17,14 +11,24 @@ const todoList = document.querySelector('.todo-list');
 const todoCompleted = document.querySelector('.todo-completed');
 const todoItem = document.querySelector('.todo-item');
 const textTodo = document.querySelector('.text-todo');
+const clearButton = document.querySelector('.clear');
 let removeButton;
+let toDoData = [];
 
-const toDoData = [];
+const getToDoData = function() {
+    if (JSON.parse(window.localStorage.getItem('Список дел') === null)) {
+        toDoData = [];
+    } else {
+        toDoData = JSON.parse(window.localStorage.getItem('Список дел'))
+    }
+}
 
 const render = function() {
     todoList.innerHTML = '';
     todoCompleted.innerHTML = '';
     toDoData.forEach(function(item, index) {
+        localStorage.setItem('Список дел', JSON.stringify(toDoData));
+        // localStorage.clear();
         const li = document.createElement('li');
         li.classList.add('todo-item');
         li.innerHTML = '<span class="text-todo">' + item.text + '</span>'       +         '<div class="todo-buttons">' + 
@@ -41,6 +45,7 @@ const render = function() {
             render();
         })
     })
+    
 //сломал мозг, но, кажется, победил
     let lists = document.querySelectorAll('.todo-item');
     lists.forEach(function(item, index) {
@@ -53,6 +58,7 @@ const render = function() {
         removeButton.addEventListener('click', remove)
 
     })
+
 }
 
 
@@ -76,3 +82,7 @@ todoControl.addEventListener('submit', function(event) {
     }
 })
 
+
+
+getToDoData();
+render();
