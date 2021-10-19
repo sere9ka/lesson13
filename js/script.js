@@ -15,6 +15,7 @@ const clearButton = document.querySelector('.clear');
 let removeButton;
 let toDoData = [];
 
+// localStorage.clear();
 const getToDoData = function() {
     if (JSON.parse(window.localStorage.getItem('Список дел') === null)) {
         toDoData = [];
@@ -28,7 +29,7 @@ const render = function() {
     todoCompleted.innerHTML = '';
     toDoData.forEach(function(item, index) {
         localStorage.setItem('Список дел', JSON.stringify(toDoData));
-        // localStorage.clear();
+        
         const li = document.createElement('li');
         li.classList.add('todo-item');
         li.innerHTML = '<span class="text-todo">' + item.text + '</span>'       +         '<div class="todo-buttons">' + 
