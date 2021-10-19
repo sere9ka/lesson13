@@ -1,10 +1,5 @@
-// Что необходимо реализовать (первые 2 пункта делаем по видео):
+'use strict';
 
-// Дела из localStorage подгружаться должны автоматически при загрузки странице
-
-//  Проверить, чтобы все работало и не было ошибок в консоли (Учесть вариант отсутствия объекта в localstorage пользователя при первой загрузке страницы
-
-'use strict'
 const headerInput =  document.querySelector('.header-input');
 const todoControl = document.querySelector('.todo-control');
 const todoList = document.querySelector('.todo-list');
@@ -16,13 +11,19 @@ let removeButton;
 let toDoData = [];
 
 // localStorage.clear();
+
+const start = function() {
+    getToDoData();
+    render();
+};
+
 const getToDoData = function() {
     if (JSON.parse(window.localStorage.getItem('Список дел') === null)) {
         toDoData = [];
     } else {
-        toDoData = JSON.parse(window.localStorage.getItem('Список дел'))
+        toDoData = JSON.parse(window.localStorage.getItem('Список дел'));
     }
-}
+};
 
 const render = function() {
     todoList.innerHTML = '';
@@ -32,58 +33,56 @@ const render = function() {
         
         const li = document.createElement('li');
         li.classList.add('todo-item');
-        li.innerHTML = '<span class="text-todo">' + item.text + '</span>'       +         '<div class="todo-buttons">' + 
-        '<button class="todo-remove"></button>' + 
-        '<button class="todo-complete"></button>' + 
-        '</div>'
+        li.innerHTML = '<span class="text-todo">' + item.text + '</span>' +  '<div class="todo-buttons">' + '<button class="todo-remove"></button>' +     '<button class="todo-complete"></button>' + '</div>';
+
         if (item.completed) {
-            todoCompleted.append(li)
+            todoCompleted.append(li);
         } else {
-            todoList.append(li)
+            todoList.append(li);
         }
         li.querySelector('.todo-complete').addEventListener('click', function () {
             item.completed = !item.completed;
             render();
-        })
-    })
-    
+        });
+        removeButton = li.querySelector('.todo-remove');
+        removeButton.addEventListener('click', function() {
+                remove(item, index);
+        });
+    });
 //сломал мозг, но, кажется, победил
-    let lists = document.querySelectorAll('.todo-item');
-    lists.forEach(function(item, index) {
-        removeButton = item.querySelector('.todo-remove')
-        const remove = function() {
-            console.log('click');
-            toDoData.splice(index, 1)
-            render()
-        }
-        removeButton.addEventListener('click', remove)
+};
 
-    })
-
-}
-
-
-
+const remove = function(item, index) {
+    if (toDoData.length > 1) {
+        console.log('Удаляем задачу: ' + item.text);
+        console.log(toDoData);
+        toDoData.splice(index, 1);
+        console.log(toDoData);
+        localStorage.removeItem(item.text);
+        render();
+    } else {
+        console.log('Удаляем все задачи');
+        localStorage.clear()
+        start()
+    }
+};
 
 todoControl.addEventListener('submit', function(event) {
     event.preventDefault();
 
     if (headerInput.value == '' || headerInput.value == null) {
-        alert('Заполните поле ввода!')
+        alert('Заполните поле ввода!');
     } else {
         const newToDo = {
             text: headerInput.value,
             completed: false,
-        }
+        };
     
         toDoData.push(newToDo);
         headerInput.value = '';
     
-        render()
+        render();
     }
-})
+});
 
-
-
-getToDoData();
-render();
+start();
